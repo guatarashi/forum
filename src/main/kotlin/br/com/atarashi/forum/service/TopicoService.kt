@@ -1,74 +1,43 @@
 package br.com.atarashi.forum.service
 
-import br.com.atarashi.forum.model.Curso
+import br.com.atarashi.forum.dto.NovoTopicoForm
+import br.com.atarashi.forum.dto.TopicoView
+import br.com.atarashi.forum.mapper.TopicoFormMapper
+import br.com.atarashi.forum.mapper.TopicoViewMapper
 import br.com.atarashi.forum.model.Topico
-import br.com.atarashi.forum.model.Usuario
 import org.springframework.stereotype.Service
-import java.util.Arrays
+import java.util.stream.Collectors
 
 @Service
-class TopicoService(private var topicos: List<Topico>) {
+class TopicoService(private var topicos: List<Topico> = ArrayList(),
+                    private val topicoViewMapper: TopicoViewMapper,
+                    private val topicoFormMapper: TopicoFormMapper
+                ) {
 
-    init {
-        val topico = Topico(
-            id = 1,
-            titulo = "Dúvida Kotlin",
-            mensagem = "Variáveis do Kotlin",
-            curso = Curso(
-                id = 1,
-                nome = "Kotlin",
-                categoria = "Programação"
-            ),
-            autor = Usuario(
-                id = 1,
-                nome = "Ana da Silva",
-                email = "ana@email.com"
-            )
-        )
-
-        val topico2 = Topico(
-            id = 2,
-            titulo = "Dúvida Kotlin 2",
-            mensagem = "Variáveis do Kotlin 2",
-            curso = Curso(
-                id = 1,
-                nome = "Kotlin",
-                categoria = "Programação"
-            ),
-            autor = Usuario(
-                id = 1,
-                nome = "Ana da Silva",
-                email = "ana@email.com"
-            )
-        )
-
-        val topico3 = Topico(
-            id = 3,
-            titulo = "Dúvida Kotlin 3",
-            mensagem = "Variáveis do Kotlin 3",
-            curso = Curso(
-                id = 1,
-                nome = "Kotlin",
-                categoria = "Programação"
-            ),
-            autor = Usuario(
-                id = 1,
-                nome = "Ana da Silva",
-                email = "ana@email.com"
-            )
-        )
-
-        topicos = Arrays.asList(topico, topico2, topico3)
+    fun listar(): List<TopicoView> {
+        return topicos.stream().map { t -> topicoViewMapper.map(t) }
+            .collect(Collectors.toList())
     }
 
-    fun listar(): List<Topico> {
-        return topicos
+    fun buscarPorId(id: Long): TopicoView {
+        val topico = topicos.stream()
+            .filter { t -> t.id == id }
+            .findFirst()
+            .get()
+
+        return topicoViewMapper.map(topico)
     }
 
-    fun buscarPorId(id: Long): Topico {
+    fun buscaPorId(id: Long): Topico {
         return topicos.stream()
             .filter { t -> t.id == id }
             .findFirst()
             .get()
+    }
+
+    fun cadastrar(form: NovoTopicoForm) {
+        val topico = topicoFormMapper.map(form)
+        topico.id = topicos.size.toLong() + 1
+        topicos = topicos.plus(topico)
     }
 }

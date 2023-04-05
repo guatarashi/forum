@@ -2,10 +2,10 @@ package br.com.atarashi.forum.model
 
 import java.time.LocalDateTime
 
-data class Resposta(val id: Long? = null,
+data class Resposta(var id: Long? = null,
                     val mensagem: String,
                     val dataCriacao: LocalDateTime = LocalDateTime.now(),
                     val autor: Usuario,
-                    val topico: Topico,
-                    val solucao: Boolean
+                    var topico: Topico? = null,
+                    var solucao: Boolean? = false
 )

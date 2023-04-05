@@ -1,5 +1,7 @@
 package br.com.atarashi.forum.service
 
+import br.com.atarashi.forum.dto.NovaRespostaForm
+import br.com.atarashi.forum.mapper.RespostaFormMapper
 import br.com.atarashi.forum.model.Curso
 import br.com.atarashi.forum.model.Resposta
 import br.com.atarashi.forum.model.Topico
@@ -9,7 +11,11 @@ import java.util.Arrays
 import java.util.stream.Collectors
 
 @Service
-class RespostaService(private var respostas: List<Resposta>) {
+class RespostaService(
+    private var respostas: List<Resposta>,
+    private val respostaFormMapper: RespostaFormMapper,
+    private val topicoService: TopicoService
+    ) {
 
     init {
         val curso = Curso(
@@ -55,5 +61,13 @@ class RespostaService(private var respostas: List<Resposta>) {
         return respostas.stream()
             .filter{r -> r.id == idTopico}
             .collect(Collectors.toList())
+    }
+
+    fun cadastrar(form: NovaRespostaForm, idTopico: Long) {
+        val resposta = respostaFormMapper.map(form)
+        resposta.id = respostas.size.toLong() + 1
+        resposta.topico = topicoService.buscaPorId(idTopico)
+
+        respostas = respostas.plus(resposta)
     }
 }
