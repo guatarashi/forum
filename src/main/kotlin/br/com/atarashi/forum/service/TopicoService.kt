@@ -3,6 +3,7 @@ package br.com.atarashi.forum.service
 import br.com.atarashi.forum.dto.AtualizacaoTopicoForm
 import br.com.atarashi.forum.dto.NovoTopicoForm
 import br.com.atarashi.forum.dto.TopicoView
+import br.com.atarashi.forum.exception.NotFoundException
 import br.com.atarashi.forum.mapper.TopicoFormMapper
 import br.com.atarashi.forum.mapper.TopicoViewMapper
 import br.com.atarashi.forum.model.Topico
@@ -10,10 +11,12 @@ import org.springframework.stereotype.Service
 import java.util.stream.Collectors
 
 @Service
-class TopicoService(private var topicos: List<Topico> = ArrayList(),
-                    private val topicoViewMapper: TopicoViewMapper,
-                    private val topicoFormMapper: TopicoFormMapper
-                ) {
+class TopicoService(
+    private var topicos: List<Topico> = ArrayList(),
+    private val topicoViewMapper: TopicoViewMapper,
+    private val topicoFormMapper: TopicoFormMapper,
+    private val notFoundMessage: String = "Topico nao encontrado!"
+) {
 
     fun listar(): List<TopicoView> {
         return topicos.stream().map { t -> topicoViewMapper.map(t) }
@@ -24,7 +27,7 @@ class TopicoService(private var topicos: List<Topico> = ArrayList(),
         val topico = topicos.stream()
             .filter { t -> t.id == id }
             .findFirst()
-            .get()
+            .orElseThrow{NotFoundException(notFoundMessage)}
 
         return topicoViewMapper.map(topico)
     }
@@ -48,7 +51,7 @@ class TopicoService(private var topicos: List<Topico> = ArrayList(),
         val topico = topicos.stream()
             .filter { t -> t.id == form.id }
             .findFirst()
-            .get()
+            .orElseThrow{NotFoundException(notFoundMessage)}
 
         val topicoAtualizado = Topico(
             id = form.id,
@@ -70,7 +73,7 @@ class TopicoService(private var topicos: List<Topico> = ArrayList(),
         val topico = topicos.stream()
             .filter { t -> t.id == id }
             .findFirst()
-            .get()
+            .orElseThrow{NotFoundException(notFoundMessage)}
 
         topicos = topicos.minus(topico)
     }
