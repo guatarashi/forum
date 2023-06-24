@@ -10,6 +10,8 @@ import br.com.atarashi.forum.model.Topico
 import br.com.atarashi.forum.repository.TopicoRepository
 import org.springframework.stereotype.Service
 import java.util.stream.Collectors
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 
 @Service
 class TopicoService(
@@ -19,9 +21,17 @@ class TopicoService(
     private val notFoundMessage: String = "Topico nao encontrado!"
 ) {
 
-    fun listar(): List<TopicoView> {
-        return repository.findAll().stream().map { t -> topicoViewMapper.map(t) }
-            .collect(Collectors.toList())
+    fun listar(
+        nomeCurso: String?,
+        paginacao: Pageable
+    ): Page<TopicoView> {
+        val topicos = if (nomeCurso == null) {
+            repository.findAll(paginacao)
+        } else  {
+            repository.findByCursoNome(nomeCurso, paginacao)
+        }
+
+        return topicos.map { t -> topicoViewMapper.map(t) }
     }
 
     fun buscarPorId(id: Long): TopicoView {
