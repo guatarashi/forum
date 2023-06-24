@@ -2,6 +2,7 @@ package br.com.atarashi.forum.controller
 
 import br.com.atarashi.forum.dto.AtualizacaoTopicoForm
 import br.com.atarashi.forum.dto.NovoTopicoForm
+import br.com.atarashi.forum.dto.TopicoPorCategoriaDto
 import br.com.atarashi.forum.dto.TopicoView
 import br.com.atarashi.forum.service.TopicoService
 import jakarta.validation.Valid
@@ -69,5 +70,10 @@ class TopicoController(private val service: TopicoService) {
     @CacheEvict(value = ["topicos"], allEntries = true)
     fun deletar(@PathVariable id: Long) {
         service.deletar(id)
+    }
+
+    @GetMapping("relatorio")
+    fun relatorio(): List<TopicoPorCategoriaDto> {
+        return service.relatorio()
     }
 }

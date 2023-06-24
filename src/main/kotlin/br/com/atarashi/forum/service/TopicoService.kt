@@ -2,12 +2,14 @@ package br.com.atarashi.forum.service
 
 import br.com.atarashi.forum.dto.AtualizacaoTopicoForm
 import br.com.atarashi.forum.dto.NovoTopicoForm
+import br.com.atarashi.forum.dto.TopicoPorCategoriaDto
 import br.com.atarashi.forum.dto.TopicoView
 import br.com.atarashi.forum.exception.NotFoundException
 import br.com.atarashi.forum.mapper.TopicoFormMapper
 import br.com.atarashi.forum.mapper.TopicoViewMapper
 import br.com.atarashi.forum.model.Topico
 import br.com.atarashi.forum.repository.TopicoRepository
+import jakarta.persistence.EntityManager
 import org.springframework.stereotype.Service
 import java.util.stream.Collectors
 import org.springframework.data.domain.Page
@@ -18,13 +20,15 @@ class TopicoService(
     private val repository: TopicoRepository,
     private val topicoViewMapper: TopicoViewMapper,
     private val topicoFormMapper: TopicoFormMapper,
-    private val notFoundMessage: String = "Topico nao encontrado!"
+    private val notFoundMessage: String = "Topico nao encontrado!",
+    private val em: EntityManager
 ) {
 
     fun listar(
         nomeCurso: String?,
         paginacao: Pageable
     ): Page<TopicoView> {
+        print(em)
         val topicos = if (nomeCurso == null) {
             repository.findAll(paginacao)
         } else  {
@@ -64,5 +68,9 @@ class TopicoService(
 
     fun deletar(id: Long) {
         repository.deleteById(id)
+    }
+
+    fun relatorio(): List<TopicoPorCategoriaDto> {
+        return repository.relatorio()
     }
 }
