@@ -1,0 +1,25 @@
+spring:
+  #  datasource:
+  #    driverClassName: com.mysql.cj.jdbc.Driver
+  #    url: jdbc:mysql://localhost/forum
+  #    username: usuario
+  #    password: senha
+  #  jpa:
+  #    database-platform: org.hibernate.dialect.MySQL8Dialect
+  datasource:
+    driverClassName: org.h2.Driver
+    url: jdbc:h2:mem:forum
+    username: sa
+    password:
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+  #    defer-datasource-initialization: true # foi desabilitado para utilizar o flyway
+  h2:
+    console:
+      enabled: true
+jwt:
+  secret: secreto
