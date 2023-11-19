@@ -4,6 +4,9 @@ Aula API REST com Kotlin e Spring Boot: Camada Web
 ---
 empacotar o jar:
 mvn package
+
+mvn clean package
+
 ---
 startando a aplicação via linha de comando: mvn spring-boot:run
 
